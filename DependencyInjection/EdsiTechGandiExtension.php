@@ -11,7 +11,7 @@ use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\Config\FileLocator;
 
-class EdsiTechGandiBundle extends Extension
+class EdsiTechGandiExtension extends Extension
 {
 
     /**
@@ -29,7 +29,7 @@ class EdsiTechGandiBundle extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Ressources/config'));
         $loader->load('services.xml');
         
         $container->setParameter('server_url', $config['server_url']);

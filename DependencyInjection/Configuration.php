@@ -28,6 +28,7 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('server_url')
                     ->isRequired()
                     ->cannotBeEmpty()
+                ->end()
                 ->scalarNode('api_key')
                     ->isRequired()
                     ->cannotBeEmpty()
