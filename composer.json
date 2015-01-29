@@ -1,5 +1,5 @@
 {
-    "name": "edsitech/gandi-bundle",
+    "name": "edsi-tech/gandi-bundle",
     "type": "symfony-bundle",
     "description": "Gandi Bundle by EDSI-Tech for the Gandi V3 API",
     "authors": [
