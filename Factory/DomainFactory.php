@@ -32,9 +32,9 @@ class DomainFactory
     {
         $factory     = new LazyLoadingValueHolderFactory();
         $initializer = function (&$wrappedObject, LazyLoadingInterface $proxy, $method, array $parameters, & $initializer) use ($domainName) {
-            $initializer   = null; // disable further initialization
+            $initializer = null; // disable further initialization
 
-            $result = []; // TODO: fetch info from API
+            $result = $this->domainAPI->getInfo($domainName);
 
             $wrappedObject = (new Domain($domainName))
                 ->setAuthInfo($result['authinfo'])

@@ -180,19 +180,11 @@ class DomainAPI {
         
     }
     
-    public function getDomain(Domain $domain) {
-        
+    public function getInfo($domainName)
+    {
         $gandi = $this->gandi->getProxy('domain');
         
-        $result = $gandi->info($this->api_key, $domain->getFqdn());
-        
-        $domain->setAuthInfo($result['authinfo']);
-        $domain->setNameservers($result['nameservers']);
-        $domain->setAutorenew($result['autorenew']['active']);
-        $domain->setCreated(new \DateTime($result['date_created']));
-        
-        return $domain;
-        
+        return $gandi->info($this->api_key, $domainName);
     }
     
     public function update(Domain $domain) {

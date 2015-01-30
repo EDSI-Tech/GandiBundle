@@ -5,7 +5,15 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="edsitech_gandi.domain_api" class="EdsiTech\GandiBundle\Service\DomainAPI">
+        <!-- Domain -->
+        <service id="edsitech_gandi.domain_repository" class="EdsiTech\GandiBundle\Repository\DomainRepository">
+            <argument type="service" id="edsitech_gandi.domain_factory" />
+            <argument type="service" id="edsitech_gandi.domain_api" />
+        </service>
+        <service id="edsitech_gandi.domain_factory" class="EdsiTech\GandiBundle\Factory\DomainFactory" public="false">
+            <argument type="service" id="edsitech_gandi.domain_api" />
+        </service>
+        <service id="edsitech_gandi.domain_api" class="EdsiTech\GandiBundle\Service\DomainAPI" public="false">
             <argument>%server_url%</argument>
             <argument>%api_key%</argument>
             <argument>%default_nameservers%</argument>
@@ -13,6 +21,8 @@
             <argument type="service" id="edsitech_gandi.contact_api" />
             <argument type="service" id="validator" />
         </service>
+
+        <!-- other -->
         <service id="edsitech_gandi.contact_api" class="EdsiTech\GandiBundle\Service\ContactAPI">
             <argument>%server_url%</argument>
             <argument>%api_key%</argument>
