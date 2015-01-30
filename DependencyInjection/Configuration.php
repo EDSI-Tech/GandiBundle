@@ -33,9 +33,23 @@ class Configuration implements ConfigurationInterface
                     ->isRequired()
                     ->cannotBeEmpty()
                 ->end()
+                ->arrayNode('default_nameservers')
+                    ->prototype('scalar')
+                        ->end()
+                    ->defaultValue(array())
+                    ->end()
+                ->arrayNode('default_handles')
+                    ->children()
+                        ->scalarNode('bill')->end()
+                        ->scalarNode('tech')->end()
+                        ->scalarNode('admin')->end()
+                        ->scalarNode('owner')->end()
+                    ->end()
+                ->end()
             ->end()
         ;
 
         return $treeBuilder;
+        
     }
 }

@@ -34,5 +34,7 @@ class EdsiTechGandiExtension extends Extension
         
         $container->setParameter('server_url', $config['server_url']);
         $container->setParameter('api_key', $config['api_key']);
+        $container->setParameter('default_nameservers', $config['default_nameservers']);
+        $container->setParameter('default_handles', $config['default_handles']);
     }
 }

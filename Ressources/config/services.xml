@@ -8,6 +8,18 @@
         <service id="edsitech_gandi.domain_api" class="EdsiTech\GandiBundle\Service\DomainAPI">
             <argument>%server_url%</argument>
             <argument>%api_key%</argument>
+            <argument>%default_nameservers%</argument>
+            <argument type="service" id="edsitech_gandi.contact_api" />
+            <argument type="service" id="validator" />
+        </service>
+        <service id="edsitech_gandi.contact_api" class="EdsiTech\GandiBundle\Service\ContactAPI">
+            <argument>%server_url%</argument>
+            <argument>%api_key%</argument>
+            <argument type="service" id="validator" />
+        </service>
+        <service id="edsitech_gandi.operation_api" class="EdsiTech\GandiBundle\Service\OperationAPI">
+            <argument>%server_url%</argument>
+            <argument>%api_key%</argument>
         </service>
     </services>
 
