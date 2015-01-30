@@ -64,12 +64,11 @@ class DomainRepository
      * Register a new domain name
      *
      * @param Domain $domain
+     * @return int $operationId
      */
     public function register(Domain $domain)
     {
-        $operationId = $this->api->register($domain);
-
-        // TODO: what to do with operation id
+        return $this->api->register($domain);
     }
 
     /**
