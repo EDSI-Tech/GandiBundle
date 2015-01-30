@@ -5,11 +5,17 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <!-- Domain -->
+        <!-- Domain public -->
         <service id="edsitech_gandi.domain_repository" class="EdsiTech\GandiBundle\Repository\DomainRepository">
             <argument type="service" id="edsitech_gandi.domain_factory" />
             <argument type="service" id="edsitech_gandi.domain_api" />
         </service>
+        <service id="edsitech_gandi.domain_availibility" class="EdsiTech\GandiBundle\API\DomainAvailability">
+            <argument>%server_url%</argument>
+            <argument>%api_key%</argument>
+        </service>
+
+        <!-- Domain internal -->
         <service id="edsitech_gandi.domain_factory" class="EdsiTech\GandiBundle\Factory\DomainFactory" public="false">
             <argument type="service" id="edsitech_gandi.domain_api" />
         </service>

@@ -9,11 +9,10 @@ namespace EdsiTech\GandiBundle\Service;
 
 use EdsiTech\GandiBundle\Model\Contact;
 use EdsiTech\GandiBundle\Model\Domain;
-
 use Zend\XmlRpc\Client;
 
-class DomainAPI {
-    
+class DomainAPI
+{
     protected $api_key;
     
     protected $gandi;
@@ -35,32 +34,15 @@ class DomainAPI {
         
         $this->gandi = new Client($server_url);
     }
-    
-    
+
     /**
-      * @TODO : mettre en cache les extensions
-      */
-    public function getExtensions() {
-
-        $gandi = $this->gandi->getProxy('domain.tld');
-         
-        $extensions = $gandi->list($this->api_key);  
-        
-        $data = array();
-
-        foreach($extensions as $ext) {
-            
-            if('golive' == $ext['phase'] && 'all' == $ext['visibility']) {
-                $data[] = $ext['name'];
-            }
-            
-        }
-
-        return $data;
-    }
-    
-    public function getList(array $options = null) {
-        
+     * Get domain names list
+     *
+     * @param array $options
+     * @return array
+     */
+    public function getList(array $options = null)
+    {
         $gandi = $this->gandi->getProxy('domain');
         
         $result = $gandi->list($this->api_key, $options);
@@ -77,41 +59,13 @@ class DomainAPI {
         
         return $data;
     }
-    
-    
-    public function isAvailable(array $domains, array $options = null) {
-        
-        $maxRetry = 0;
-        
-        $domain_string = array();
-        
-        foreach ($domains as $domain) {
-            $domain_string[] = $domain->getFqdn();
-        }
-        
-        $gandi = $this->gandi->getProxy('domain');
-        
-        $results = $gandi->available($this->api_key, $domain_string, $options);
-        
-        foreach($results as $domain => $result) {
-            
-            if('pending' == $result) {
-                $maxRetry++;
-                
-                //if max retry has expired, return the data as it.
-                if($maxRetry > self::MAX_TIMEOUT) {
-                    return $results;
-                }
-                
-                sleep(1);
-                return $this->isAvailable($domains);
-            }
-        }
-        
-        return $results;
-        
-    }
-    
+
+    /**
+     * @param Domain $domain
+     * @return mixed
+     * @throws APIException
+     * @throws \Exception
+     */
     public function register(Domain $domain) {
         //faire valider le domaine avec le validator
         
@@ -179,23 +133,25 @@ class DomainAPI {
         return $operation_id;
         
     }
-    
+
+    /**
+     * @param $domainName
+     * @return array
+     */
     public function getInfo($domainName)
     {
         $gandi = $this->gandi->getProxy('domain');
         
         return $gandi->info($this->api_key, $domainName);
     }
-    
-    public function update(Domain $domain) {
-        
-        
-    }
-    
+
+    /**
+     * @param Domain $domain
+     * @return bool
+     */
     public function enableAutorenew(Domain $domain) {
         
         $gandi = $this->gandi->getProxy('domain.autorenew');
-        
 
         $result = $gandi->activate($this->api_key, $domain->getFqdn());
     
@@ -204,23 +160,22 @@ class DomainAPI {
         } else {
             return false;
         }
-
-        
     }
-    
+
+    /**
+     * @param Domain $domain
+     * @return bool
+     */
     public function disableAutorenew(Domain $domain) {
         
         $gandi = $this->gandi->getProxy('domain.autorenew');
         
         $result = $gandi->deactivate($this->api_key, $domain->getFqdn());
-        
             
         if(0 == $result['active']) {
             return true;
         } else {
             return false;
         }
-        
     }
-    
 }
