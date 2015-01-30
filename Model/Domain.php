@@ -28,13 +28,11 @@ class Domain {
         
         protected $status;
         
-        protected $tags;
-        
-        protected $zone_id;
+        protected $autorenew;
         
         protected $authinfo;
         
-        protected $date_created;
+        protected $created;
         
         protected $date_updated;
         
@@ -281,6 +279,91 @@ class Domain {
         public function getFqdn() {
             
             return $this->fqdn;
+        }
+        
+        /**
+         * @return String
+         */
+     
+        public function getAuthInfo() {
+            
+            return $this->authinfo;
+        }
+        
+        /**
+         * @param String $authinfo
+         * @return $this
+         */
+        public function setAuthInfo($authinfo) {
+            
+            $this->authinfo = $authinfo;
+            
+            return $this;   
+        }
+        
+        /**
+         * @return String
+         */
+     
+        public function getStatus() {
+            
+            return $this->status;
+        }
+        
+        /**
+         * @param String $status
+         * @return $this
+         */
+        public function setStatus($status) {
+            
+            $this->status = $status;
+            
+            return $this; 
+        }
+        
+        /**
+         * @return String
+         */
+     
+        public function getAutorenew() {
+            
+            return $this->autorenew;
+        }
+        
+        /**
+         * @param String $autorenew
+         * @return $this
+         */
+        public function setAutorenew($autorenew) {
+            
+            $this->autorenew = $autorenew;
+            
+            return $this; 
+        }
+        
+        public function getLock() {
+            
+            return $this->lock;
+        }
+        
+        /**
+         * @return String
+         */
+     
+        public function getCreated() {
+            
+            return $this->created;
+        }
+        
+        /**
+         * @param String $created
+         * @return $this
+         */
+        public function setCreated(\DateTime $created) {
+            
+            $this->created = $created;
+            
+            return $this; 
         }
         
 }

@@ -22,13 +22,16 @@ class DomainAPI {
     
     protected $default_nameservers;
     
+    protected $default_handles;
+    
     const MAX_TIMEOUT = 5;
     
-    public function __construct($server_url, $api_key, $default_nameservers, $contactAPI, $validator) {
+    public function __construct($server_url, $api_key, $default_nameservers, $default_handles, $contactAPI, $validator) {
         
         $this->api_key = $api_key;
         $this->validator = $validator;
         $this->default_nameservers = $default_nameservers;
+        $this->default_handles = $default_handles;
         
         $this->gandi = new Client($server_url);
     }
@@ -144,6 +147,26 @@ class DomainAPI {
             
         }
         
+        //add default admin handle if not set
+        if(null == $domain->getAdminContact() && array_key_exists('admin', $this->default_handles)) {
+            $domain->setAdminContact(new Contact($this->default_handles['admin']));
+        }
+        
+        //add default bill handle if not set
+        if(null == $domain->getBillContact() && array_key_exists('bill', $this->default_handles)) {
+            $domain->setBillContact(new Contact($this->default_handles['bill']));
+        }
+        
+        //add default tech handle if not set
+        if(null == $domain->getTechContact() && array_key_exists('tech', $this->default_handles)) {
+            $domain->setTechContact(new Contact($this->default_handles['tech']));
+        }
+        
+        //add default owner handle if not set
+        if(null == $domain->getOwnerContact() && array_key_exists('owner', $this->default_handles)) {
+            $domain->setOwnerContact(new Contact($this->default_handles['owner']));
+        }
+        
         $data = $domain->toGandiArray();
         $result = $gandi->create($this->api_key, $fdqn, $data);
         
@@ -159,11 +182,52 @@ class DomainAPI {
     
     public function getDomain(Domain $domain) {
         
+        $gandi = $this->gandi->getProxy('domain');
+        
+        $result = $gandi->info($this->api_key, $domain->getFqdn());
+        
+        $domain->setAuthInfo($result['authinfo']);
+        $domain->setNameservers($result['nameservers']);
+        $domain->setAutorenew($result['autorenew']['active']);
+        $domain->setCreated(new \DateTime($result['date_created']));
+        
+        return $domain;
         
     }
     
     public function update(Domain $domain) {
         
+        
+    }
+    
+    public function enableAutorenew(Domain $domain) {
+        
+        $gandi = $this->gandi->getProxy('domain.autorenew');
+        
+
+        $result = $gandi->activate($this->api_key, $domain->getFqdn());
+    
+        if(1 == $result['active']) {
+            return true;
+        } else {
+            return false;
+        }
+
+        
+    }
+    
+    public function disableAutorenew(Domain $domain) {
+        
+        $gandi = $this->gandi->getProxy('domain.autorenew');
+        
+        $result = $gandi->deactivate($this->api_key, $domain->getFqdn());
+        
+            
+        if(0 == $result['active']) {
+            return true;
+        } else {
+            return false;
+        }
         
     }
     
