@@ -44,9 +44,10 @@ class DomainRepository
     }
 
     /**
+     * @param array|null $options
      * @return Domain[]
      */
-    public function findBy(array $options)
+    public function findBy(array $options = null)
     {
         $domainObjects = [];
 
@@ -59,7 +60,40 @@ class DomainRepository
         return $domainObjects;
     }
 
-    public function add(Domain $domain)
+    /**
+     * Register a new domain name
+     *
+     * @param Domain $domain
+     */
+    public function register(Domain $domain)
     {
+        $operationId = $this->api->register($domain);
+
+        // TODO: what to do with operation id
+    }
+
+    /**
+     * Commit a Domain changes
+     *
+     * @param Domain $domain
+     * @return int number of changes
+     */
+    public function update(Domain $domain)
+    {
+        $changes = $domain->getChangesTrack();
+
+        $nbUpdates = 0;
+
+        if (true === $changes['auto_renew']) {
+            if (true === $domain->getAutorenew()) {
+                $this->api->enableAutorenew($domain);
+            } else {
+                $this->api->disableAutorenew($domain);
+            }
+
+            $nbUpdates++;
+        }
+
+        return $nbUpdates;
     }
 }
