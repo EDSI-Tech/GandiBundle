@@ -25,7 +25,6 @@
             <argument>%default_nameservers%</argument>
             <argument>%default_handles%</argument>
             <argument type="service" id="edsitech_gandi.contact_api" />
-            <argument type="service" id="validator" />
         </service>
 
         <!-- other -->

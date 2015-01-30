@@ -10,25 +10,23 @@ namespace EdsiTech\GandiBundle\Service;
 use EdsiTech\GandiBundle\Model\Contact;
 use EdsiTech\GandiBundle\Model\Domain;
 use Zend\XmlRpc\Client;
+use EdsiTech\GandiBundle\Exception\APIException;
 
 class DomainAPI
 {
     protected $api_key;
     
     protected $gandi;
-    
-    protected $validator;
-    
+
     protected $default_nameservers;
     
     protected $default_handles;
     
     const MAX_TIMEOUT = 5;
     
-    public function __construct($server_url, $api_key, $default_nameservers, $default_handles, $contactAPI, $validator) {
+    public function __construct($server_url, $api_key, $default_nameservers, $default_handles, $contactAPI) {
         
         $this->api_key = $api_key;
-        $this->validator = $validator;
         $this->default_nameservers = $default_nameservers;
         $this->default_handles = $default_handles;
         
@@ -66,15 +64,8 @@ class DomainAPI
      * @throws APIException
      * @throws \Exception
      */
-    public function register(Domain $domain) {
-        //faire valider le domaine avec le validator
-        
-        $errors = $this->validator->validate($domain);
-        
-        if(count($errors) > 0) {
-            throw new \Exception(print_r($errors,true));
-        }
-        
+    public function register(Domain $domain)
+    {
         $fdqn = $domain->getFqdn();
         
         $gandi = $this->gandi->getProxy('domain');
