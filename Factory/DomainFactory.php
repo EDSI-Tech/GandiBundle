@@ -41,6 +41,7 @@ class DomainFactory
                 ->setNameservers($result['nameservers'])
                 ->setAutorenew($result['autorenew']['active'])
                 ->setCreated(new \DateTime($result['date_created']))
+                ->setUpdated(new \DateTime($result['date_updated']))
             ;
 
             return true; // confirm that initialization occurred correctly

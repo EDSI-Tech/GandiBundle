@@ -34,7 +34,7 @@ class Domain
 
     protected $created;
 
-    protected $date_updated;
+    protected $updated;
 
     protected $date_registry_end;
 
@@ -66,8 +66,8 @@ class Domain
     }
 
     public function __toString() {
-
-        return $this->getFqdn();
+        
+        return $this->fqdn ?: '';
     }
 
     public function toGandiArray() {
@@ -373,6 +373,26 @@ class Domain
     public function setCreated(\DateTime $created) {
 
         $this->created = $created;
+
+        return $this;
+    }
+    
+    /**
+     * @return String
+     */
+
+    public function getUpdated() {
+
+        return $this->updated;
+    }
+
+    /**
+     * @param String $created
+     * @return $this
+     */
+    public function setUpdated(\DateTime $updated) {
+
+        $this->updated = $updated;
 
         return $this;
     }

@@ -18,13 +18,10 @@ class ContactAPI {
     
     protected $gandi;
     
-    protected $validator;
-    
-    public function __construct($server_url, $api_key, $validator) {
+    public function __construct($server_url, $api_key) {
         
         $this->api_key = $api_key;
-        $this->validator = $validator;
-                
+
         $this->gandi = new Client($server_url);
         $this->gandi = $this->gandi->getProxy('contact');
     }
@@ -71,12 +68,6 @@ class ContactAPI {
     }
     
     public function persist(Contact $contact) {
-        
-        $errors = $this->validator->validate($contact);
-        
-        if(count($errors) > 0) {
-            throw new \Exception(print_r($errors,true));
-        }
         
         $data = $contact->toGandiArray();
         

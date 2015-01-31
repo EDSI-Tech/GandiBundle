@@ -69,8 +69,8 @@ class DomainAPI
         $fdqn = $domain->getFqdn();
         
         $gandi = $this->gandi->getProxy('domain');
-
-        //test if the owner can register the domain
+        
+       //test if the owner can register the domain
         if(!$this->gandi->getProxy('contact')->can_associate_domain(
                                     $this->api_key, 
                                     $domain->getOwnerContact()->getHandle(),
@@ -79,10 +79,10 @@ class DomainAPI
                                     ))
         ) {
             
-            throw new \Exception("This contact cannot register this domain.");
+            throw new \APIException("This contact cannot register this domain.");
         
         }
-        
+   
         //if no DNS servers defined, add servers from the configuration file
         if((count($domain->getNameservers()) < 1) && (count($this->default_nameservers) > 0)) {
 
@@ -113,6 +113,7 @@ class DomainAPI
         }
         
         $data = $domain->toGandiArray();
+        
         $result = $gandi->create($this->api_key, $fdqn, $data);
         
         if($result['last_error']) {
@@ -129,11 +130,11 @@ class DomainAPI
      * @param $domainName
      * @return array
      */
-    public function getInfo($domainName)
+    public function getInfo(Domain $domain)
     {
         $gandi = $this->gandi->getProxy('domain');
         
-        return $gandi->info($this->api_key, $domainName);
+        return $gandi->info($this->api_key, $domain->getFqdn());
     }
 
     /**
@@ -145,8 +146,8 @@ class DomainAPI
         $gandi = $this->gandi->getProxy('domain.autorenew');
 
         $result = $gandi->activate($this->api_key, $domain->getFqdn());
-    
-        if(1 == $result['active']) {
+
+        if(true == $result['active']) {
             return true;
         } else {
             return false;
@@ -163,7 +164,7 @@ class DomainAPI
         
         $result = $gandi->deactivate($this->api_key, $domain->getFqdn());
             
-        if(0 == $result['active']) {
+        if(false == $result['active']) {
             return true;
         } else {
             return false;

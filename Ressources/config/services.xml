@@ -26,13 +26,23 @@
             <argument>%default_handles%</argument>
             <argument type="service" id="edsitech_gandi.contact_api" />
         </service>
-
-        <!-- other -->
+        
+        <!-- Contact public -->
+        <service id="edsitech_gandi.contact_repository" class="EdsiTech\GandiBundle\Repository\ContactRepository">
+            <argument type="service" id="edsitech_gandi.contact_factory" />
+            <argument type="service" id="edsitech_gandi.contact_api" />
+        </service>
+        
+        <!-- Contact internal -->
+        <service id="edsitech_gandi.contact_factory" class="EdsiTech\GandiBundle\Factory\ContactFactory" public="false">
+            <argument type="service" id="edsitech_gandi.contact_api" />
+        </service>
         <service id="edsitech_gandi.contact_api" class="EdsiTech\GandiBundle\Service\ContactAPI">
             <argument>%server_url%</argument>
             <argument>%api_key%</argument>
-            <argument type="service" id="validator" />
         </service>
+        
+        <!-- other -->
         <service id="edsitech_gandi.operation_api" class="EdsiTech\GandiBundle\Service\OperationAPI">
             <argument>%server_url%</argument>
             <argument>%api_key%</argument>

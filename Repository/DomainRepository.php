@@ -95,4 +95,10 @@ class DomainRepository
 
         return $nbUpdates;
     }
+    
+    public function enableAutorenew(Domain $domain) {
+        
+        return $this->api->enableAutorenew($domain);
+        
+    }
 }
