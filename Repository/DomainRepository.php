@@ -50,11 +50,11 @@ class DomainRepository
     public function findBy(array $options = null)
     {
         $domainObjects = [];
-
+        
         $domainsList = $this->api->getList($options);
 
         foreach ($domainsList as $domainName) {
-            $domainObjects[] = $this->factory->build($domainName);
+            $domainObjects[] = $this->factory->build($domainName->getFqdn());
         }
 
         return $domainObjects;
@@ -64,11 +64,22 @@ class DomainRepository
      * Register a new domain name
      *
      * @param Domain $domain
-     * @return int $operationId
+     * @return Operation $operation
      */
     public function register(Domain $domain)
     {
         return $this->api->register($domain);
+    }
+    
+    /**
+     * Transfer a domain name
+     *
+     * @param Domain $domain
+     * @return Operation $operation
+     */
+    public function transfert(Domain $domain, $authcode = null, $change_owner = false, $duration = 1)
+    {
+        return $this->api->transfert($domain, $authcode, $change_owner, $duration);
     }
 
     /**
@@ -98,6 +109,18 @@ class DomainRepository
         if (true === $changes['nameservers']) {
             $this->api->setNameservers($domain);
         }
+        
+        //update lock status
+        if (true === $changes['lock']) {
+            
+            if(false === $domain->getLock()) {
+                $this->api->unlock($domain);
+            } else {
+                $this->api->lock($domain);
+            }
+            
+        }
+        
         
         //update dnssec key
         if (true === $changes['dnssec']) {

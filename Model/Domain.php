@@ -47,6 +47,7 @@ class Domain
     private $changesTrack = [
         'auto_renew' => false,
         'nameservers' => false,
+        'lock' => false,
         'dnssec' => false,
     ];
         
@@ -339,11 +340,25 @@ class Domain
     }
     
     /**
+     * @return this
+     */
+    public function setTld($tld) {
+
+        $this->tld = $tld;
+        
+        return $this;
+    }
+    
+    /**
      * @return String
      */
     public function getTld() {
-
-        return strstr($this->fqdn,'.');
+        
+        if($this->tld) {
+            return $this->tld;
+        } else {
+            return strstr($this->fqdn,'.');
+        }
     }
     
 
@@ -411,6 +426,15 @@ class Domain
         return $this;
     }
 
+    public function setLock($lock) {
+
+        $this->changesTrack['lock'] = true;
+
+        $this->lock = $lock;
+        
+        return $this;
+    }
+    
     public function getLock() {
 
         return $this->lock;

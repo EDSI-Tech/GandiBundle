@@ -31,16 +31,20 @@ class DomainFactory
      */
     public function build($domainName)
     {
+        
         $factory     = new LazyLoadingValueHolderFactory();
         $initializer = function (&$wrappedObject, LazyLoadingInterface $proxy, $method, array $parameters, & $initializer) use ($domainName) {
             $initializer = null; // disable further initialization
+            
+            $wrappedObject = new Domain($domainName);
+            
+            $result = $this->domainAPI->getInfo($wrappedObject);
 
-            $result = $this->domainAPI->getInfo($domainName);
-
-            $wrappedObject = (new Domain($domainName))
+            $wrappedObject
                 ->setAuthInfo($result['authinfo'])
                 ->setNameservers($result['nameservers'])
                 ->setAutorenew($result['autorenew']['active'])
+                ->setTld($result['tld'])
                 ->setStatus($result['status'])
                 ->setOwnerContact(new Contact($result['contacts']['owner']))
                 ->setAdminContact(new Contact($result['contacts']['admin']))
@@ -51,7 +55,17 @@ class DomainFactory
                 ->setUpdated(new \DateTime($result['date_updated']))
                 ->setExpire(new \DateTime($result['date_registry_end']))
             ;
+            
+            $wrappedObject->setLock(false);
+            
+            foreach($result['status'] as $status) {
 
+                if('clientTransferProhibited' == $status) {
+                    $wrappedObject->setLock(true);
+                }
+                
+            }
+            
             return true; // confirm that initialization occurred correctly
         };
 

@@ -121,10 +121,6 @@ class DomainAPI
             throw new APIException($result['last_error']);
         }
         
-        if($result['last_error']) {
-            throw new APIException($result['last_error']);
-        }
-        
         return new Operation($result);
         
     }
@@ -139,7 +135,38 @@ class DomainAPI
         
         return $gandi->info($this->api_key, $domain->getFqdn());
     }
-
+    
+    public function lock(Domain $domain) {
+        
+        $gandi = $this->gandi->getProxy('domain.status');
+        
+        $result = $gandi->lock($this->api_key, $domain->getFqdn());
+        
+        dump($result);
+        exit();
+        
+        if($result['last_error']) {
+            throw new APIException($result['last_error']);
+        }
+        
+        return new Operation($result);
+        
+    }
+    
+    public function unlock(Domain $domain) {
+        
+        $gandi = $this->gandi->getProxy('domain.status');
+        
+        $result = $gandi->unlock($this->api_key, $domain->getFqdn());
+        
+        if($result['last_error']) {
+            throw new APIException($result['last_error']);
+        }
+        
+        return new Operation($result);
+        
+    }
+    
     /**
      * @param Domain $domain
      * @return bool
