@@ -141,10 +141,7 @@ class DomainAPI
         $gandi = $this->gandi->getProxy('domain.status');
         
         $result = $gandi->lock($this->api_key, $domain->getFqdn());
-        
-        dump($result);
-        exit();
-        
+
         if($result['last_error']) {
             throw new APIException($result['last_error']);
         }
