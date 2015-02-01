@@ -325,7 +325,6 @@ class Domain
     /**
      * @return Contact
      */
-
     public function getBillContact() {
 
         return $this->contacts['bill'];
@@ -334,11 +333,19 @@ class Domain
     /**
      * @return String
      */
-
     public function getFqdn() {
 
         return $this->fqdn;
     }
+    
+    /**
+     * @return String
+     */
+    public function getTld() {
+
+        return strstr($this->fqdn,'.');
+    }
+    
 
     /**
      * @return String

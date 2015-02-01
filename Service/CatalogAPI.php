@@ -18,6 +18,10 @@ class CatalogAPI {
     
     protected $gandi;
     
+    /**
+     * @param String $server_url
+     * @param String $api_key
+     */
     public function __construct($server_url, $api_key) {
         
         $this->api_key = $api_key;
@@ -29,9 +33,9 @@ class CatalogAPI {
      * @param Domain $domain
      * @param String $action = create, renew, transfer, change_owner
      * @param String $grid = A, B, C, D, E
-     * @return int price
+     * @return float price
      */
-    public function getPriceForDomain(Domain $domain, $action = 'create', $grid = null) {
+    public function getPriceForDomain(Domain $domain, $action = 'create', $currency = 'EUR', $grid = null) {
         
         $gandi = $this->gandi->getProxy('catalog');
         
@@ -48,16 +52,28 @@ class CatalogAPI {
             )
         );
         
-        $result = $gandi->list($this->api_key, $options, null, $grid);
+        $result = $gandi->list($this->api_key, $options, $currency, $grid);
         
+        foreach($result as $price) {
+            
+            if($domain->getTld() == $price['product']['description']) {
+                
+                return $price['unit_price'][0]['price'];
+                
+            }
+            
+        }
         
-        return $result;
+        return null;
         
     }   
     
+    /**
+     * @return float price
+     */
     public function getAccountBalance() {
         
-        $gandi = $this->gandi->getProxy('contact.balance');
+        $gandi = $this->gandi->getProxy('contact');
         
         $result = $gandi->balance($this->api_key);
         
@@ -65,6 +81,9 @@ class CatalogAPI {
         
     }
     
+    /**
+     * @return String
+     */
     private function getCurrentGrid() {
         
         $gandi = $gandi = $this->gandi->getProxy('contact');
