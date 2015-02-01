@@ -83,6 +83,7 @@ class DomainRepository
 
         $nbUpdates = 0;
 
+        //update autorenew settings
         if (true === $changes['auto_renew']) {
             if (true === $domain->getAutorenew()) {
                 $this->api->enableAutorenew($domain);
@@ -91,6 +92,19 @@ class DomainRepository
             }
 
             $nbUpdates++;
+        }
+        
+        //update nameservers
+        if (true === $changes['nameservers']) {
+            $this->api->setNameservers($domain);
+        }
+        
+        //update dnssec key
+        if (true === $changes['dnssec']) {
+            
+            //@TODO: complete
+            //essayer ici de trouver les différences...
+            
         }
 
         return $nbUpdates;

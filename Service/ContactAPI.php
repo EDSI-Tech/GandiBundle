@@ -35,16 +35,31 @@ class ContactAPI {
         
         foreach($response as $current) {
             
-            $contact = new Contact();
+            $contact = new Contact($current['handle']);
             $contact->setId($current['id'])
+                    ->setCompany($current['orgname'])
+                    ->setType($current['type'])
+                    ->setVatNumber($current['vat_number'])
+                    ->setFirstName($current['given'])
                     ->setLastName($current['family'])
-                    ->setHandle($current['handle'])
-                    ->setCountry($current['country']);
+                    ->setStreet($current['streetaddr'])
+                    ->setZip($current['zip'])
+                    ->setCity($current['city'])
+                    ->setCountry($current['country'])
+                    ->setEmail($current['email'])
+                    ->setPhone($current['phone'])
+                    ->setMobile($current['mobile'])
+                    ->setFax($current['fax'])
+                    ->setLanguage($current['lang'])
+                    ->setHideAddress($current['data_obfuscated'])
+                    ->setHideEmail($current['mail_obfuscated'])
+            ;
+            
+            
                     
             $data[] = $contact;
             
         }
-        print_r($response);
      
         return $data;
     }
@@ -59,12 +74,38 @@ class ContactAPI {
         }
         
         $contact = new Contact();
-        $contact->setId($data['id']);
-        $contact->setEmail($data['email']);
-        $contact->setPhone($data['phone']);
-        $contact->setCountry($data['country']);
+        $contact->setId($data['id'])
+                ->setCompany($data['orgname'])
+                ->setType($data['type'])
+                ->setVatNumber($data['vat_number'])
+                ->setFirstName($data['given'])
+                ->setLastName($data['family'])
+                ->setStreet($data['streetaddr'])
+                ->setZip($data['zip'])
+                ->setCity($data['city'])
+                ->setCountry($data['country'])
+                ->setEmail($data['email'])
+                ->setPhone($data['phone'])
+                ->setMobile($data['mobile'])
+                ->setFax($data['fax'])
+                ->setLanguage($data['lang'])
+                ->setHideAddress($data['data_obfuscated'])
+                ->setHideEmail($data['mail_obfuscated'])
+            ;
         
         return $contact;
+    }
+    
+    public function delete(Contact $contact) {
+        
+        $response = $this->gandi->delete($this->api_key, $contact->getHandle());
+        
+        if($response) {
+            return $response;
+        } else {
+            throw new APIException("Cannot delete contact.");
+        }
+        
     }
     
     public function persist(Contact $contact) {

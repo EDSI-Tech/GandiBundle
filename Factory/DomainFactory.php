@@ -11,6 +11,7 @@ use ProxyManager\Factory\LazyLoadingValueHolderFactory;
 use ProxyManager\Proxy\LazyLoadingInterface;
 use EdsiTech\GandiBundle\Service\DomainAPI;
 use EdsiTech\GandiBundle\Model\Domain;
+use EdsiTech\GandiBundle\Model\Contact;
 
 class DomainFactory
 {
@@ -40,8 +41,15 @@ class DomainFactory
                 ->setAuthInfo($result['authinfo'])
                 ->setNameservers($result['nameservers'])
                 ->setAutorenew($result['autorenew']['active'])
-                ->setCreated(new \DateTime($result['date_created']))
+                ->setStatus($result['status'])
+                ->setOwnerContact(new Contact($result['contacts']['owner']))
+                ->setAdminContact(new Contact($result['contacts']['admin']))
+                ->setBillContact(new Contact($result['contacts']['bill']))
+                ->setTechContact(new Contact($result['contacts']['tech']))
+                ->setResellerContact(new Contact($result['contacts']['reseller']))
+                ->setCreated(new \DateTime($result['date_registry_creation']))
                 ->setUpdated(new \DateTime($result['date_updated']))
+                ->setExpire(new \DateTime($result['date_registry_end']))
             ;
 
             return true; // confirm that initialization occurred correctly

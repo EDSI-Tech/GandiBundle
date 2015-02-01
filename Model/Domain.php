@@ -21,6 +21,7 @@ class Domain
 
     protected $fqdn;
 
+    protected $dnssec;
 
     //used only when registered (getters only)
 
@@ -36,7 +37,7 @@ class Domain
 
     protected $updated;
 
-    protected $date_registry_end;
+    protected $expire;
 
     protected $lock;
 
@@ -44,7 +45,9 @@ class Domain
      * @var array used to track changes
      */
     private $changesTrack = [
-        'auto_renew' => false
+        'auto_renew' => false,
+        'nameservers' => false,
+        'dnssec' => false,
     ];
         
     const TYPE_LOCKED = 1;
@@ -55,6 +58,7 @@ class Domain
         $this->fqdn = $domain;
 
         $this->nameservers = array();
+        $this->dnssec = array();
         $this->contacts = array(
             'bill' => null,
             'tech' => null,
@@ -130,8 +134,9 @@ class Domain
      * @param Array $nameservers
      * @return $this
      */
-
     public function setNameservers(array $nameservers) {
+
+        $this->changesTrack['nameservers'] = true;
 
         $this->nameservers = $nameservers;
 
@@ -142,9 +147,10 @@ class Domain
      * @param $nameserver
      * @return $this
      */
-
     public function addNameserver($nameserver) {
 
+        $this->changesTrack['nameservers'] = true;
+        
         $this->nameservers[] = $nameserver;
 
         return $this;
@@ -154,13 +160,59 @@ class Domain
      * @param $nameserver
      * @return $this
      */
-
     public function removeNameserver($nameserver) {
+
+        $this->changesTrack['nameservers'] = true;
 
         foreach($this->nameservers as $key => $value) {
 
             if($value == $nameserver) {
                 unset($this->nameservers[$key]);
+            }
+
+        }
+
+        return $this;
+    }
+    
+    /**
+     * @param Array $dnssec
+     * @return $this
+     */
+    public function setDnssec(array $dnssec) {
+
+        $this->changesTrack['dnssec'] = true;
+
+        $this->dnssec = $dnssec;
+
+        return $this;
+    }
+
+    /**
+     * @param $dnssec
+     * @return $this
+     */
+    public function addDnssec($dnssec) {
+
+        $this->changesTrack['dnssec'] = true;
+
+        $this->dnssec[] = $dnssec;
+
+        return $this;
+    }
+
+    /**
+     * @param $dnssec
+     * @return $this
+     */
+    public function removeDnssec($dnssec) {
+        
+        $this->changesTrack['dnssec'] = true;
+
+        foreach($this->dnssec as $key => $value) {
+
+            if($value == $dnssec) {
+                unset($this->dnssec[$key]);
             }
 
         }
@@ -393,6 +445,26 @@ class Domain
     public function setUpdated(\DateTime $updated) {
 
         $this->updated = $updated;
+
+        return $this;
+    }
+    
+    /**
+     * @return String
+     */
+
+    public function getExpire() {
+
+        return $this->expire;
+    }
+
+    /**
+     * @param String $expire
+     * @return $this
+     */
+    public function setExpire(\DateTime $expire) {
+
+        $this->expire = $expire;
 
         return $this;
     }

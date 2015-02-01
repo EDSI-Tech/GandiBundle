@@ -9,89 +9,138 @@ namespace EdsiTech\GandiBundle\Model;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * @Assert\Callback(methods={"validateCompanyType", "validateCreation"})
+ */
 class Contact {
     
+    /**
+     * @Assert\Null(groups={"create"})
+     */
     protected $id;
     
     /**
+     * @Assert\NotBlank(groups={"company"})
+     */
+    protected $company;
+    
+    protected $vat_number;
+    
+    /**
      * @Assert\NotBlank()
+     * @Assert\Type(type="string")
      */
     protected $given;
     
     
     /**
      * @Assert\NotBlank()
+     * @Assert\Type(type="string")
      */
     protected $family;
     
     
     /**
      * @Assert\NotBlank()
-     * @Assert\Email()
-     */
-    protected $email;
-    
-    
-    /**
-     * @Assert\NotBlank()
+     * @Assert\Type(type="string")
      */
     protected $street;
     
     
     /**
      * @Assert\NotBlank()
+     * @Assert\Type(type="string")
      */
     protected $zip;
     
     
     /**
      * @Assert\NotBlank()
+     * @Assert\Type(type="string")
      */
     protected $city;
     
     
     /**
      * @Assert\Country()
+     * @Assert\Type(type="string")
      */
     protected $country;
-    
+        
+    /**
+     * @Assert\NotBlank()
+     * @Assert\Email()
+     */
+    protected $email;
     
     /**
      * @Assert\NotBlank()
+     * @Assert\Type(type="string")
      */
     protected $phone;
     
     
+    protected $mobile;
+    
+    protected $fax;
+    
     /**
-     * @Assert\Choice(choices = {Contact::TYPE_PARTICULAR, Contact::TYPE_COMPANY, Contact::TYPE_ASSOCIATION, Contact::TYPE_PUBLICBODY})
+     * @Assert\Locale
+     */
+    
+    protected $language;
+    
+    /**
+     * @Assert\Type(type="bool")
+     */
+    protected $hide_address;
+    
+    /**
+     * @Assert\Type(type="bool")
+     */
+
+    protected $hide_email;
+    
+    /**
+     * @Assert\Choice(choices = {Contact::TYPE_PERSON, Contact::TYPE_COMPANY, Contact::TYPE_ASSOCIATION, Contact::TYPE_PUBLICBODY})
      */
     protected $type;
     
-    
-    
+    /**
+     * @Assert\NotBlank(groups={"create"})
+     */
     protected $password;
     
+    /**
+     * @Assert\Null(groups={"create"})
+     */
     protected $handle;
     
     
-    const TYPE_PARTICULAR = 0;
+    const TYPE_PERSON = 0;
     const TYPE_COMPANY = 1;
     const TYPE_ASSOCIATION = 2;
     const TYPE_PUBLICBODY = 3;
+    const TYPE_RESELLER = 4;
     
     public function getTypes() {
         
         return array(
-            self::TYPE_PARTICULAR,
+            self::TYPE_PERSON,
             self::TYPE_COMPANY,
             self::TYPE_ASSOCIATION,
-            self::TYPE_PUBLICBODY
+            self::TYPE_PUBLICBODY,
+            self::TYPE_RESELLER
         );
     }
     
     public function __construct($handle = null) {
         
-        $this->setHandle($handle);
+        $this
+            ->setHandle($handle)
+            ->setHideAddress(false)
+            ->setHideEmail(true)
+        ;
         
     }
     
@@ -103,18 +152,41 @@ class Contact {
     public function toGandiArray() {
         
         return array(
+            'orgname' => $this->getCompany(),
+            'type' => $this->getType(),
+            'vat_number' => $this->getVatNumber(),
             'given' => $this->getFirstName(),
             'family' => $this->getLastName(),
             'streetaddr' => $this->getStreet(),
-            'city' => $this->getCity(),
             'zip' => $this->getZip(),
+            'city' => $this->getCity(),
             'country' => $this->getCountry(),
             'email' => $this->getEmail(),
             'phone' => $this->getPhone(),
-            'type' => $this->getType(),
+            'mobile' => $this->getMobile(),
+            'fax' => $this->getFax(),
+            'lang' => $this->getLanguage(),
+            'data_obfuscated' => $this->getHideAddress(),
+            'mail_obfuscated' => $this->getHideEmail(),
             'password' => $this->getPassword()
         );
         
+    }
+    
+    public function validateCompanyType(ExecutionContext $ec)
+    {
+        if (self::TYPE_PERSON !== $this->getType()) 
+        {
+          $ec->getGraphWalker()->walkReference($this, 'company', $ec->getPropertyPath(), true);
+        }
+    }
+    
+    public function validateCreation(ExecutionContext $ec)
+    {
+        if (null === $this->getHandle()) 
+        {
+          $ec->getGraphWalker()->walkReference($this, 'create', $ec->getPropertyPath(), true);
+        }
     }
     
     public function isNew() {
@@ -127,6 +199,42 @@ class Contact {
         
     }
     
+    public function getCompany() {
+        
+        return $this->company;
+    }
+    
+    public function setCompany($company) {
+        
+        $this->company = $company;
+        
+        return $this;
+    }
+    
+        
+    public function getType() {
+        
+        return $this->type;
+    }
+    
+    public function setType($type) {
+        
+        $this->type = $type;
+        
+        return $this;
+    }
+    
+    public function getVATNumber() {
+        
+        return $this->vat_number;
+    }
+    
+    public function setVATNumber($vat_number) {
+        
+        $this->vat_number = $vat_number;
+        
+        return $this;
+    }
     
     public function getFirstName() {
         
@@ -151,42 +259,7 @@ class Contact {
         
         return $this;
     }
-    
-    public function getType() {
-        
-        return $this->type;
-    }
-    
-    public function setType($type) {
-        
-        $this->type = $type;
-        
-        return $this;
-    }
-    
-    public function getEmail() {
-        
-        return $this->email;
-    }
-    
-    public function setEmail($email) {
-        
-        $this->email = $email;
-        
-        return $this;
-    }
-    
-    public function getPhone() {
-        
-        return $this->phone;
-    }
-    
-    public function setPhone($phone) {
-        
-        $this->phone = $phone;
-        
-        return $this;
-    }
+
     
     public function getStreet() {
         
@@ -235,6 +308,93 @@ class Contact {
         
         return $this;
     }
+    
+        
+    public function getEmail() {
+        
+        return $this->email;
+    }
+    
+    public function setEmail($email) {
+        
+        $this->email = $email;
+        
+        return $this;
+    }
+    
+    public function getPhone() {
+        
+        return $this->phone;
+    }
+    
+    public function setPhone($phone) {
+        
+        $this->phone = $phone;
+        
+        return $this;
+    }
+    
+    public function getMobile() {
+        
+        return $this->mobile;
+    }
+    
+    public function setMobile($mobile) {
+        
+        $this->mobile = $mobile;
+        
+        return $this;
+    }
+    
+    
+    public function getFax() {
+        
+        return $this->fax;
+    }
+    
+    public function setFax($fax) {
+        
+        $this->fax = $fax;
+        
+        return $this;
+    }
+    
+    public function getLanguage() {
+        
+        return $this->language;
+    }
+    
+    public function setLanguage($language) {
+        
+        $this->language = $language;
+        
+        return $this;
+    }
+    
+    public function getHideAddress() {
+        
+        return $this->hide_address;
+    }
+
+    public function setHideAddress($hide_address) {
+        
+        $this->hide_address = $hide_address;
+        
+        return $this;
+    }
+    
+    public function getHideEmail() {
+        
+        return $this->hide_email;
+    }
+    
+    public function setHideEmail($hide_email) {
+        
+        $this->hide_email = $hide_email;
+        
+        return $this;
+    }
+
     
     public function getPassword() {
         

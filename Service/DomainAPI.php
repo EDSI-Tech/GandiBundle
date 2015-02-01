@@ -9,6 +9,7 @@ namespace EdsiTech\GandiBundle\Service;
 
 use EdsiTech\GandiBundle\Model\Contact;
 use EdsiTech\GandiBundle\Model\Domain;
+use EdsiTech\GandiBundle\Model\Operation;
 use Zend\XmlRpc\Client;
 use EdsiTech\GandiBundle\Exception\APIException;
 
@@ -120,9 +121,11 @@ class DomainAPI
             throw new APIException($result['last_error']);
         }
         
-        $operation_id = $result['id'];
+        if($result['last_error']) {
+            throw new APIException($result['last_error']);
+        }
         
-        return $operation_id;
+        return new Operation($result);
         
     }
 
@@ -170,4 +173,134 @@ class DomainAPI
             return false;
         }
     }
+    
+    /**
+     * @param Domain $domain
+     * @param int $duration
+     * @return mixed
+     * @throws APIException
+     * @throws \Exception
+     */
+    public function renew(Domain $domain, $duration = 1) {
+        
+        $data = array(
+            'duration' => $duration
+        );
+        
+        $gandi = $this->gandi->getProxy('domain');
+        
+        $result = $gandi->renew($this->api_key, $domain->getFqdn(), $data);
+        
+        if($result['last_error']) {
+            throw new APIException($result['last_error']);
+        }
+        
+        return new Operation($result);
+        
+    }
+    
+    public function transfert(Domain $domain, $authcode = null, $change_owner = false, $duration = 1) {
+        
+        //add default admin handle if not set
+        if(null == $domain->getAdminContact() && array_key_exists('admin', $this->default_handles)) {
+            $domain->setAdminContact(new Contact($this->default_handles['admin']));
+        }
+        
+        //add default bill handle if not set
+        if(null == $domain->getBillContact() && array_key_exists('bill', $this->default_handles)) {
+            $domain->setBillContact(new Contact($this->default_handles['bill']));
+        }
+        
+        //add default tech handle if not set
+        if(null == $domain->getTechContact() && array_key_exists('tech', $this->default_handles)) {
+            $domain->setTechContact(new Contact($this->default_handles['tech']));
+        }
+        
+        //add default owner handle if not set
+        if(null == $domain->getOwnerContact() && array_key_exists('owner', $this->default_handles)) {
+            $domain->setOwnerContact(new Contact($this->default_handles['owner']));
+        }
+        
+        $data = array(
+            'admin' => $domain->getAdminContact()->getHandle(),
+            'bill' => $domain->getBillContact()->getHandle(),
+            'owner' => $domain->getOwnerContact()->getHandle(),
+            'tech' => $domain->getTechContact()->getHandle(),
+            'duration' => $duration
+        );
+        
+        if(null !== $authcode) {
+            $data['authinfo'] = $authcode;
+        }
+        
+        if(false !== $change_owner) {
+            $data['change_owner'] = true;
+        }
+        
+        if(count($domain->getNameservers()) > 0) {
+            $data['nameservers'] = $domain->getNameservers();
+        }
+        
+        $gandi = $this->gandi->getProxy('domain.transferin');
+        
+        $result = $gandi->proceed($this->api_key, $domain->getFqdn(), $data);
+        
+        if($result['last_error']) {
+            throw new APIException($result['last_error']);
+        }
+        
+        return new Operation($result);
+        
+    }
+    
+    public function setNameservers(Domain $domain) {
+        
+        $gandi = $this->gandi->getProxy('domain.nameservers');
+        
+        $result = $gandi->set($this->api_key, $domain->getFqdn(), $domain->getNameservers());
+        
+        if($result['last_error']) {
+            throw new APIException($result['last_error']);
+        }
+        
+        return new Operation($result);
+        
+    }
+    
+    public function getDnssecKeys(Domain $domain) {
+        
+        $gandi = $this->gandi->getProxy('domain.dnssec');
+        
+        return $gandi->list($this->api_key, $domain->getFqdn());
+        
+    }
+    
+    public function addDnssecKey(Domain $domain, $key) {
+        
+        $gandi = $this->gandi->getProxy('domain.dnssec');
+        
+        $result = $gandi->create($this->api_key, $domain->getFqdn(), $key);
+        
+        if($result['last_error']) {
+            throw new APIException($result['last_error']);
+        }
+        
+        return new Operation($result);
+        
+    }
+    
+    public function removeDnssecKey($key) {
+        
+        $gandi = $this->gandi->getProxy('domain.dnssec');
+        
+        $result = $gandi->delete($this->api_key, $key_id);
+        
+        if($result['last_error']) {
+            throw new APIException($result['last_error']);
+        }
+        
+        return new Operation($result);
+        
+    }
+    
 }

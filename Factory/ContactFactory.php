@@ -37,11 +37,23 @@ class ContactFactory
             $result = $this->contactAPI->getInfo($contactHandle);
 
             $wrappedObject = (new Contact($contactHandle))
-                
-                ->setStreet($result['streetaddr'])
-                ->setEmail($result['email'])
-                ->setCountry($result['country'])
                 ->setId($result['id'])
+                ->setCompany($result['orgname'])
+                ->setType($result['type'])
+                ->setVatNumber($result['vat_number'])
+                ->setFirstName($result['given'])
+                ->setLastName($result['family'])
+                ->setStreet($result['streetaddr'])
+                ->setZip($result['zip'])
+                ->setCity($result['city'])
+                ->setCountry($result['country'])
+                ->setEmail($result['email'])
+                ->setPhone($result['phone'])
+                ->setMobile($result['mobile'])
+                ->setFax($result['fax'])
+                ->setLanguage($result['lang'])
+                ->setHideAddress($result['data_obfuscated'])
+                ->setHideEmail($result['mail_obfuscated'])
             ;
 
             return true; // confirm that initialization occurred correctly

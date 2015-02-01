@@ -35,16 +35,13 @@ class OperationAPI {
     
     public function getList(array $options = null) {
         
-        return;
-        
         $result = $this->gandi->info($this->api_key, $options);
-        
         
         $data = array();
         
         foreach($result as $operation) {
             
-            $data[] = new Operation();
+            $data[] = new Operation($operation);
         }
         
         return $data;
@@ -55,7 +52,7 @@ class OperationAPI {
         return $this->gandi->cancel($this->api_key, $operation->getId());
     }
     
-    public function restart(Operation $operation, array $options = array()) {
+    public function restart(Operation $operation, array $options = null) {
         
         return $this->gandi->relaunch($this->api_key, $operation->getId(), $options);
     }

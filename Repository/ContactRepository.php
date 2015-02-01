@@ -84,6 +84,18 @@ class ContactRepository
     }
     
     /**
+     * Delete a contact
+     *
+     * @param Contact $contact
+     * @return bool
+     */
+    public function delete(Contact $contact)
+    {
+
+        return $this->api->delete($contact);
+    }
+    
+    /**
      * Commit a Contact changes
      *
      * @param Contact $contact
