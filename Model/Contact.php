@@ -86,7 +86,7 @@ class Contact {
     protected $fax;
     
     /**
-     * @Assert\Locale
+     * @Assert\Language
      */
     
     protected $language;

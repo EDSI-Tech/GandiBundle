@@ -26,25 +26,6 @@ class ContactType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         
-        $builder->addEventListener(
-            FormEvents::PRE_SET_DATA,
-            function(FormEvent $event) {
-                $form = $event->getForm();
-
-                $data = $event->getData();
-
-                if(Contact::TYPE_PERSON !== $data->getType()) {
-                    $form->add('company', 'text', array(
-                        'required'  => true,
-                    ));
-                    $form->add('vat_number', 'text', array(
-                        'required'  => false,
-                    ));
-                }
-
-            }
-        );
-        
         $builder
             ->add('type', 'choice', array(
                 'label' => 'contact.label.type',
@@ -90,7 +71,7 @@ class ContactType extends AbstractType
                 'label' => 'contact.label.fax',
                 'required'  => false,
             ))
-            ->add('language', 'locale', array(
+            ->add('language', 'language', array(
                 'label' => 'contact.label.language',
                 'required'  => false,
             ))
@@ -109,6 +90,7 @@ class ContactType extends AbstractType
         //extra parameters
         $builder->add('extra_parameters', 'collection', array(
             'type'   => 'text',
+            'label' => 'contact.label.extra_parameters',
             'options'  => array(
                 'required'  => false,
                 'allow_add' => true,
@@ -123,8 +105,30 @@ class ContactType extends AbstractType
         if(null === $builder->getData()->getHandle()) {
             $builder->add('password','password', array(
                 'required'  => true,
+                'label' => 'contact.label.password',
             ));
         }
+        
+        $builder->addEventListener(
+            FormEvents::PRE_SET_DATA,
+            function(FormEvent $event) {
+                $form = $event->getForm();
+
+                $data = $event->getData();
+
+                if(Contact::TYPE_PERSON !== $data->getType()) {
+                    $form->add('company', 'text', array(
+                        'required'  => true,
+                        'label' => 'contact.label.company',
+                    ));
+                    $form->add('vat_number', 'text', array(
+                        'required'  => false,
+                        'label' => 'contact.label.vat_number',
+                    ));
+                }
+
+            }
+        );
         
     }
 
