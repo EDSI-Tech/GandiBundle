@@ -8,6 +8,7 @@
 namespace EdsiTech\GandiBundle\Model;
 
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\ExecutionContext;
 
 /**
  * @Assert\Callback(methods={"validateCompanyType", "validateCreation"})
@@ -30,14 +31,14 @@ class Contact {
      * @Assert\NotBlank()
      * @Assert\Type(type="string")
      */
-    protected $given;
+    protected $firstname;
     
     
     /**
      * @Assert\NotBlank()
      * @Assert\Type(type="string")
      */
-    protected $family;
+    protected $lastname;
     
     
     /**
@@ -179,8 +180,8 @@ class Contact {
             'orgname' => $this->getCompany(),
             'type' => $this->getType(),
             'vat_number' => $this->getVatNumber(),
-            'given' => $this->getFirstName(),
-            'family' => $this->getLastName(),
+            'firstname' => $this->getFirstName(),
+            'lastname' => $this->getLastName(),
             'streetaddr' => $this->getStreet(),
             'zip' => $this->getZip(),
             'city' => $this->getCity(),
@@ -471,7 +472,7 @@ class Contact {
     
     public function addExtraParameter($parameter) {
         
-        this->extra_parameters[] = $parameter;
+        $this->extra_parameters[] = $parameter;
         
         return $this;
         

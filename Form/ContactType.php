@@ -25,16 +25,36 @@ class ContactType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        
+        $builder->addEventListener(
+            FormEvents::PRE_SET_DATA,
+            function(FormEvent $event) {
+                $form = $event->getForm();
+
+                $data = $event->getData();
+
+                if(Contact::TYPE_PERSON !== $data->getType()) {
+                    $form->add('company', 'text', array(
+                        'required'  => true,
+                    ));
+                    $form->add('vat_number', 'text', array(
+                        'required'  => false,
+                    ));
+                }
+
+            }
+        );
+        
         $builder
             ->add('type', 'choice', array(
                 'label' => 'contact.label.type',
                 'choices' => Contact::getTypes()
-            ));
-            ->add('given', 'text', array(
+            ))
+            ->add('firstname', 'text', array(
                 'label' => 'contact.label.firstname',
                 'required'  => true,
             ))
-            ->add('family', 'text', array(
+            ->add('lastname', 'text', array(
                 'label' => 'contact.label.lastname',
                 'required'  => true,
             ))
@@ -74,6 +94,7 @@ class ContactType extends AbstractType
                 'label' => 'contact.label.language',
                 'required'  => false,
             ))
+/*
             ->add('hide_address', 'checkbox', array(
                 'label' => 'contact.label.hide_address',
                 'required'  => false,
@@ -82,6 +103,7 @@ class ContactType extends AbstractType
                 'label' => 'contact.label.hide_email',
                 'required'  => false,
             ))
+*/
         ;
         
         //extra parameters
@@ -104,24 +126,6 @@ class ContactType extends AbstractType
             ));
         }
         
-        $builder->addEventListener(
-            FormEvents::PRE_SET_DATA,
-            function(FormEvent $event) {
-                $form = $event->getForm();
-
-                $data = $event->getData();
-
-                if(Contact::TYPE_PERSON !== $data->getType()) {
-                    $form->add('company', 'text', array(
-                        'required'  => true,
-                    ));
-                    $form->add('vat_number', 'text', array(
-                        'required'  => false,
-                    ));
-                }
-
-            }
-        );
     }
 
     /**

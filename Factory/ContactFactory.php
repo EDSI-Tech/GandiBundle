@@ -34,7 +34,7 @@ class ContactFactory
         $initializer = function (&$wrappedObject, LazyLoadingInterface $proxy, $method, array $parameters, & $initializer) use ($contactHandle) {
             $initializer = null; // disable further initialization
 
-            $result = $this->contactAPI->getInfo($contactHandle);
+            $result = $this->contactAPI->get($contactHandle);
 
             $wrappedObject = (new Contact($contactHandle))
                 ->setId($result['id'])

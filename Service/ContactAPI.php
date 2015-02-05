@@ -66,34 +66,14 @@ class ContactAPI {
     
     public function get($handle) {
         
-        $data = $this->gandi->list($this->api_key, $handle);
+        $data = $this->gandi->info($this->api_key, $handle);
         
         if(!is_array($data)) {
             
             throw new \Exception("Cannot get contact details.");
         }
-        
-        $contact = new Contact();
-        $contact->setId($data['id'])
-                ->setCompany($data['orgname'])
-                ->setType($data['type'])
-                ->setVatNumber($data['vat_number'])
-                ->setFirstName($data['given'])
-                ->setLastName($data['family'])
-                ->setStreet($data['streetaddr'])
-                ->setZip($data['zip'])
-                ->setCity($data['city'])
-                ->setCountry($data['country'])
-                ->setEmail($data['email'])
-                ->setPhone($data['phone'])
-                ->setMobile($data['mobile'])
-                ->setFax($data['fax'])
-                ->setLanguage($data['lang'])
-                ->setHideAddress($data['data_obfuscated'])
-                ->setHideEmail($data['mail_obfuscated'])
-            ;
-        
-        return $contact;
+
+        return $data;
     }
     
     public function delete(Contact $contact) {

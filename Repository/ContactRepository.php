@@ -7,7 +7,7 @@
 
 namespace EdsiTech\GandiBundle\Repository;
 
-use EdsiTech\GandiBundle\Factory\DomainFactory;
+use EdsiTech\GandiBundle\Factory\ContactFactory;
 use EdsiTech\GandiBundle\Model\Contact;
 use EdsiTech\GandiBundle\Service\ContactAPI;
 
@@ -23,7 +23,7 @@ class ContactRepository
      */
     private $api;
 
-    public function __construct(DomainFactory $factory, ContactAPI $contactAPI)
+    public function __construct(ContactFactory $factory, ContactAPI $contactAPI)
     {
         $this->factory  = $factory;
         $this->api      = $contactAPI;
