@@ -116,6 +116,8 @@ class Contact {
      */
     protected $handle;
     
+    protected $extra_parameters;
+    
     
     const TYPE_PERSON = 0;
     const TYPE_COMPANY = 1;
@@ -123,15 +125,33 @@ class Contact {
     const TYPE_PUBLICBODY = 3;
     const TYPE_RESELLER = 4;
     
-    public function getTypes() {
+    public static function getTypes() {
         
         return array(
-            self::TYPE_PERSON,
-            self::TYPE_COMPANY,
-            self::TYPE_ASSOCIATION,
-            self::TYPE_PUBLICBODY,
-            self::TYPE_RESELLER
+            self::TYPE_PERSON => 'contact.type.person',
+            self::TYPE_COMPANY => 'contact.type.company',
+            self::TYPE_ASSOCIATION => 'contact.type.association',
+            self::TYPE_PUBLICBODY => 'contact.type.publicbody',
         );
+    }
+    
+    public function getExtraParametersTypes() {
+        
+        return array(
+            'birth_city',
+            'birth_country',
+            'birth_date',
+            'birth_department',
+            'brand_number',
+            'duns',
+            'waldec',
+            'x-aero_ens_authid',
+            'x-aero_ens_authkey',
+            'x-au_registrant_id_number',
+            'x-travel_uin'
+            //...
+        );
+        
     }
     
     public function __construct($handle = null) {
@@ -146,7 +166,11 @@ class Contact {
     
     public function __toString() {
         
-        return $this->getFirstName().' '.$this->getLastName().' ('.$this->getHandle().')';
+        if($this->getCompany()) {
+            return $this->getCompany().' ('.$this->getHandle().')';
+        } else {
+            return $this->getFirstName().' '.$this->getLastName().' ('.$this->getHandle().')';
+        }
     }
     
     public function toGandiArray() {
@@ -168,7 +192,8 @@ class Contact {
             'lang' => $this->getLanguage(),
             'data_obfuscated' => $this->getHideAddress(),
             'mail_obfuscated' => $this->getHideEmail(),
-            'password' => $this->getPassword()
+            'password' => $this->getPassword(),
+            'extra_parameters' => $this->getExtraParameters()
         );
         
     }
@@ -430,6 +455,26 @@ class Contact {
         $this->id = $id;
         
         return $this;
+    }
+    
+    public function getExtraParameters() {
+        
+        return $this->extra_parameters;
+    }
+    
+    public function setExtraParameters(array $extra_parameters) {
+        
+        $this->extra_parameters = $extra_parameters;
+        
+        return $this;
+    }
+    
+    public function addExtraParameter($parameter) {
+        
+        this->extra_parameters[] = $parameter;
+        
+        return $this;
+        
     }
     
 }
