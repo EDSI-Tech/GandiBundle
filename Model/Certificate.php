@@ -25,6 +25,8 @@ class Certificate {
     
     protected $csr;
     
+    protected $cn;
+    
     static TYPE_STANDARD = 'cert_std_1_0_0';
     static TYPE_STANDARD_WILDCARD = 'cert_std_w_0_0';
     
@@ -32,15 +34,15 @@ class Certificate {
     static METHOD_DNS = 'dns';
     static METHOD_FILE = 'file';
     
-    public function __construct($data) {
+    public function __construct($cn) {
         
-
+        $this->cn = $cn;
         
     }
     
     public function __toString() {
         
-        return $this->getId();
+        return $this->getCn();
     }
     
     public function getId() {

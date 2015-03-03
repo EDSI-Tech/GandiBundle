@@ -61,6 +61,15 @@ class CertificateAPI {
         return new Operation($result);
      
     }
+    
+    public function get($fqdn) {
+        
+        return $this->gandi->list($this->api_key, array(
+            'cn' => $fqdn,
+        ));
+        
+        
+    }
 
     public function list(array $options = null) {
 
