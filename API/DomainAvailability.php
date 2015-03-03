@@ -70,7 +70,8 @@ class DomainAvailability
 
                 //if max retry has expired, return the data as it.
                 if($maxRetry > self::MAX_TIMEOUT) {
-                    return $results;
+                    
+                    return convertDomainListToUTF8($results);
                 }
 
                 sleep(1);
@@ -78,6 +79,18 @@ class DomainAvailability
             }
         }
 
-        return $results;
+        return convertDomainListToUTF8($results);
+    }
+    
+    private function convertDomainListToUTF8(array $domains) {
+        
+        $result = array();
+        
+        foreach($domains as $domain => $result) {
+            $result[idn_to_utf8($domain)] = $result;
+        }
+        
+        return $result;
+        
     }
 }

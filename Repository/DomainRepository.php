@@ -54,7 +54,8 @@ class DomainRepository
         $domainsList = $this->api->getList($options);
 
         foreach ($domainsList as $domainName) {
-            $domainObjects[] = $this->factory->build($domainName->getFqdn());
+            $domain = idn_to_utf8($domainName->getFqdn());
+            $domainObjects[] = $this->factory->build($domain);
         }
 
         return $domainObjects;
