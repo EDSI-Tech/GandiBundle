@@ -51,6 +51,10 @@
             <argument>%server_url%</argument>
             <argument>%api_key%</argument>
         </service>
+        <service id="edsitech_gandi.certificate_api" class="EdsiTech\GandiBundle\Service\CertificateAPI">
+            <argument>%server_url%</argument>
+            <argument>%api_key%</argument>
+        </service>
     </services>
 
 </container>
