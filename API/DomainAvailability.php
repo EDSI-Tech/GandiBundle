@@ -52,7 +52,7 @@ class DomainAvailability
     }
 
     /**
-     * @param array $domains domain names
+     * @param array $domainNames domain names
      * @param array $options
      * @return mixed
      */
@@ -71,7 +71,7 @@ class DomainAvailability
                 //if max retry has expired, return the data as it.
                 if($maxRetry > self::MAX_TIMEOUT) {
                     
-                    return convertDomainListToUTF8($results);
+                    return $this->convertDomainListToUTF8($results);
                 }
 
                 sleep(1);
@@ -79,7 +79,7 @@ class DomainAvailability
             }
         }
 
-        return convertDomainListToUTF8($results);
+        return $this->convertDomainListToUTF8($results);
     }
     
     private function convertDomainListToUTF8(array $domains) {
