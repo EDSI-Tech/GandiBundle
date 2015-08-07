@@ -10,6 +10,8 @@
 
 namespace EdsiTech\GandiBundle\API;
 
+use EdsiTech\GandiBundle\Model\Domain;
+use EdsiTech\GandiBundle\Model\DomainState;
 use Zend\XmlRpc\Client;
 
 class DomainAvailability
@@ -102,7 +104,22 @@ class DomainAvailability
         
         foreach($domains as $domain => $result) {
             $domain = idn_to_utf8($domain);
-            $data[$domain] = $result;
+
+            switch($result) {
+                case 'unavailable':
+                    $state = DomainState::STATE_UNAVAILABLE;
+                    break;
+
+                case 'available':
+                    $state = DomainState::STATE_AVAILABLE;
+                    break;
+
+                default:
+                    $state = DomainState::STATE_UNKNOWN;
+                    break;
+            }
+
+            $data[$domain] = $state;
         }
         
         return $data;
