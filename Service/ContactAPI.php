@@ -1,8 +1,11 @@
 <?php
-
-/*
+/**
  * (c) EDSI-Tech Sarl - All rights reserved.
  * This file cannot be copied and/or distributed without express permission of EDSI-Tech Sarl and all its content remains the property of EDSI-Tech Sarl.
+ *
+ * @author      Philippe BONVIN <p.bonvin@edsi-tech.com>
+ * @version     1.0
+ * @since       2015-08-21
  */
 
 namespace EdsiTech\GandiBundle\Service;
@@ -13,11 +16,21 @@ use EdsiTech\GandiBundle\Exception\APIException;
 use Zend\XmlRpc\Client;
 
 class ContactAPI {
-        
+
+    /**
+     * @var string
+     */
     protected $api_key;
-    
+
+    /**
+     * @var Client\ServerProxy
+     */
     protected $gandi;
-    
+
+    /**
+     * @param $server_url
+     * @param $api_key
+     */
     public function __construct($server_url, $api_key) {
         
         $this->api_key = $api_key;
@@ -25,8 +38,10 @@ class ContactAPI {
         $this->gandi = new Client($server_url);
         $this->gandi = $this->gandi->getProxy('contact');
     }
-    
-    
+
+    /**
+     * @return array
+     */
     public function getList() {
 
         $response = $this->gandi->list($this->api_key);
@@ -63,7 +78,12 @@ class ContactAPI {
      
         return $data;
     }
-    
+
+    /**
+     * @param $handle
+     * @return mixed
+     * @throws \Exception
+     */
     public function get($handle) {
         
         $data = $this->gandi->info($this->api_key, $handle);
@@ -75,7 +95,12 @@ class ContactAPI {
 
         return $data;
     }
-    
+
+    /**
+     * @param Contact $contact
+     * @return mixed
+     * @throws APIException
+     */
     public function delete(Contact $contact) {
         
         $response = $this->gandi->delete($this->api_key, $contact->getHandle());
@@ -87,7 +112,13 @@ class ContactAPI {
         }
         
     }
-    
+
+    /**
+     * @param Contact $contact
+     * @return bool
+     * @throws APIException
+     * @throws \Exception
+     */
     public function persist(Contact $contact) {
         
         $data = $contact->toGandiArray();

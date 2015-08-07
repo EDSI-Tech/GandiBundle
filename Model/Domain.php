@@ -1,8 +1,11 @@
 <?php
-    
-/*
+/**
  * (c) EDSI-Tech Sarl - All rights reserved.
  * This file cannot be copied and/or distributed without express permission of EDSI-Tech Sarl and all its content remains the property of EDSI-Tech Sarl.
+ *
+ * @author      Philippe BONVIN <p.bonvin@edsi-tech.com>
+ * @version     1.0
+ * @since       2015-08-18
  */
     
 namespace EdsiTech\GandiBundle\Model;
@@ -54,6 +57,9 @@ class Domain
     const TYPE_LOCKED = 1;
     const TYPE_UNLOCKED = 0;
 
+    /**
+     * @param string $domain
+     */
     public function __construct($domain)
     {
         $this->fqdn = $domain;
@@ -70,11 +76,17 @@ class Domain
 
     }
 
+    /**
+     * @return string
+     */
     public function __toString() {
         
         return $this->fqdn ?: '';
     }
 
+    /**
+     * @return array
+     */
     public function toGandiArray() {
 
         return array(
@@ -88,14 +100,24 @@ class Domain
 
     }
 
+    /**
+     * unlock domain for transfert
+     */
     public function unlock() {
         $this->lock = self::TYPE_UNLOCKED;
     }
 
+    /**
+     * lock domain
+     */
     public function lock() {
         $this->lock = self::TYPE_LOCKED;
     }
 
+    /**
+     * @param $id
+     * @return $this
+     */
     public function setId($id) {
 
         $this->id = $id;
@@ -103,11 +125,18 @@ class Domain
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getId() {
 
         return $this->id;
     }
 
+    /**
+     * @param string $duration
+     * @return $this
+     */
     public function setDuration($duration) {
 
         $this->duration = $duration;

@@ -1,8 +1,11 @@
 <?php
-        
-/*
+/**
  * (c) EDSI-Tech Sarl - All rights reserved.
  * This file cannot be copied and/or distributed without express permission of EDSI-Tech Sarl and all its content remains the property of EDSI-Tech Sarl.
+ *
+ * @author      Philippe BONVIN <p.bonvin@edsi-tech.com>
+ * @version     1.0
+ * @since       2015-08-19
  */
     
 namespace EdsiTech\GandiBundle\Model;
@@ -20,7 +23,10 @@ class Operation {
     protected $type;
     
     protected $step;
-    
+
+    /**
+     * @param $data
+     */
     public function __construct($data) {
         
         $this->id = $data['id'];
@@ -31,17 +37,27 @@ class Operation {
         $this->step = $data['step'];
         
     }
-    
+
+    /**
+     * @return mixed
+     */
     public function __toString() {
         
         return $this->getId();
     }
-    
+
+    /**
+     * @return mixed
+     */
     public function getId() {
         
         return $this->id;
     }
-    
+
+    /**
+     * @param $id
+     * @return $this
+     */
     public function setId($id) {
         
         $this->id = $id;
@@ -49,7 +65,7 @@ class Operation {
         return $this;
     }
     
- /**
+    /**
      * @return String
      */
 
@@ -59,7 +75,7 @@ class Operation {
     }
 
     /**
-     * @param String $created
+     * @param \DateTime $created
      * @return $this
      */
     public function setCreated(\DateTime $created) {
@@ -79,7 +95,7 @@ class Operation {
     }
 
     /**
-     * @param DateTime $updated
+     * @param \DateTime $updated
      * @return $this
      */
     public function setUpdated(\DateTime $updated) {
@@ -88,24 +104,38 @@ class Operation {
 
         return $this;
     }
-    
+
+    /**
+     * @return int
+     */
     public function getType() {
         
         return $this->type;
     }
-    
+
+    /**
+     * @param int $type
+     * @return $this
+     */
     public function setType($type) {
         
         $this->type = $type;
         
         return $this;
     }
-    
+
+    /**
+     * @return mixed
+     */
     public function getStep() {
         
         return $this->step;
     }
-    
+
+    /**
+     * @param $step
+     * @return $this
+     */
     public function setStep($step) {
         
         $this->step = $step;

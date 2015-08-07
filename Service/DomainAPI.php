@@ -1,8 +1,11 @@
 <?php
-
-/*
+/**
  * (c) EDSI-Tech Sarl - All rights reserved.
  * This file cannot be copied and/or distributed without express permission of EDSI-Tech Sarl and all its content remains the property of EDSI-Tech Sarl.
+ *
+ * @author      Philippe BONVIN <p.bonvin@edsi-tech.com>
+ * @version     1.0
+ * @since       2015-08-21
  */
 
 namespace EdsiTech\GandiBundle\Service;
@@ -15,16 +18,38 @@ use EdsiTech\GandiBundle\Exception\APIException;
 
 class DomainAPI
 {
+    /**
+     * @var string
+     */
     protected $api_key;
-    
+
+    /**
+     * @var string
+     */
     protected $gandi;
 
+    /**
+     * @var array
+     */
     protected $default_nameservers;
-    
+
+    /**
+     * @var array
+     */
     protected $default_handles;
-    
+
+    /**
+     * Timeout in seconds
+     */
     const MAX_TIMEOUT = 5;
-    
+
+    /**
+     * @param $server_url
+     * @param $api_key
+     * @param $default_nameservers
+     * @param $default_handles
+     * @param $contactAPI
+     */
     public function __construct($server_url, $api_key, $default_nameservers, $default_handles, $contactAPI) {
         
         $this->api_key = $api_key;
@@ -61,9 +86,9 @@ class DomainAPI
 
     /**
      * @param Domain $domain
-     * @return mixed
+     * @return Operation
      * @throws APIException
-     * @throws \Exception
+     * @throws \APIException
      */
     public function register(Domain $domain)
     {
@@ -126,7 +151,7 @@ class DomainAPI
     }
 
     /**
-     * @param $domainName
+     * @param Domain $domain
      * @return array
      */
     public function getInfo(Domain $domain)
@@ -135,7 +160,12 @@ class DomainAPI
         
         return $gandi->info($this->api_key, $domain->getFqdn());
     }
-    
+
+    /**
+     * @param Domain $domain
+     * @return Operation
+     * @throws APIException
+     */
     public function lock(Domain $domain) {
         
         $gandi = $this->gandi->getProxy('domain.status');
@@ -149,7 +179,12 @@ class DomainAPI
         return new Operation($result);
         
     }
-    
+
+    /**
+     * @param Domain $domain
+     * @return Operation
+     * @throws APIException
+     */
     public function unlock(Domain $domain) {
         
         $gandi = $this->gandi->getProxy('domain.status');
@@ -222,7 +257,15 @@ class DomainAPI
         return new Operation($result);
         
     }
-    
+
+    /**
+     * @param Domain $domain
+     * @param null $authcode
+     * @param bool|false $change_owner
+     * @param int $duration
+     * @return Operation
+     * @throws APIException
+     */
     public function transfert(Domain $domain, $authcode = null, $change_owner = false, $duration = 1) {
         
         //add default admin handle if not set
@@ -276,7 +319,12 @@ class DomainAPI
         return new Operation($result);
         
     }
-    
+
+    /**
+     * @param Domain $domain
+     * @return Operation
+     * @throws APIException
+     */
     public function setNameservers(Domain $domain) {
         
         $gandi = $this->gandi->getProxy('domain.nameservers');
@@ -290,7 +338,11 @@ class DomainAPI
         return new Operation($result);
         
     }
-    
+
+    /**
+     * @param Domain $domain
+     * @return mixed
+     */
     public function getDnssecKeys(Domain $domain) {
         
         $gandi = $this->gandi->getProxy('domain.dnssec');
@@ -298,7 +350,13 @@ class DomainAPI
         return $gandi->list($this->api_key, $domain->getFqdn());
         
     }
-    
+
+    /**
+     * @param Domain $domain
+     * @param $key
+     * @return Operation
+     * @throws APIException
+     */
     public function addDnssecKey(Domain $domain, $key) {
         
         $gandi = $this->gandi->getProxy('domain.dnssec');
@@ -312,7 +370,12 @@ class DomainAPI
         return new Operation($result);
         
     }
-    
+
+    /**
+     * @param $key
+     * @return Operation
+     * @throws APIException
+     */
     public function removeDnssecKey($key) {
         
         $gandi = $this->gandi->getProxy('domain.dnssec');

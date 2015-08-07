@@ -1,8 +1,11 @@
 <?php
-
-/*
+/**
  * (c) EDSI-Tech Sarl - All rights reserved.
  * This file cannot be copied and/or distributed without express permission of EDSI-Tech Sarl and all its content remains the property of EDSI-Tech Sarl.
+ *
+ * @author      Philippe BONVIN <p.bonvin@edsi-tech.com>
+ * @version     1.0
+ * @since       2015-08-22
  */
 
 namespace EdsiTech\GandiBundle\Repository;
@@ -23,13 +26,20 @@ class ContactRepository
      */
     private $api;
 
+    /**
+     * @param ContactFactory $factory
+     * @param ContactAPI $contactAPI
+     */
     public function __construct(ContactFactory $factory, ContactAPI $contactAPI)
     {
         $this->factory  = $factory;
         $this->api      = $contactAPI;
     }
 
-
+    /**
+     * @param string $handle
+     * @return Contact
+     */
     public function find($handle)
     {
         return $this->factory->build($handle);

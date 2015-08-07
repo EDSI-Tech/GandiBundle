@@ -1,8 +1,11 @@
 <?php
-
-/*
+/**
  * (c) EDSI-Tech Sarl - All rights reserved.
  * This file cannot be copied and/or distributed without express permission of EDSI-Tech Sarl and all its content remains the property of EDSI-Tech Sarl.
+ *
+ * @author      Philippe BONVIN <p.bonvin@edsi-tech.com>
+ * @version     1.0
+ * @since       2015-08-22
  */
 
 namespace EdsiTech\GandiBundle\Repository;
@@ -23,13 +26,20 @@ class DomainRepository
      */
     private $api;
 
+    /**
+     * @param DomainFactory $factory
+     * @param DomainAPI $domainAPI
+     */
     public function __construct(DomainFactory $factory, DomainAPI $domainAPI)
     {
         $this->factory  = $factory;
         $this->api      = $domainAPI;
     }
 
-
+    /**
+     * @param $domainName
+     * @return Domain
+     */
     public function find($domainName)
     {
         return $this->factory->build($domainName);
@@ -133,7 +143,11 @@ class DomainRepository
 
         return $nbUpdates;
     }
-    
+
+    /**
+     * @param Domain $domain
+     * @return bool
+     */
     public function enableAutorenew(Domain $domain) {
         
         return $this->api->enableAutorenew($domain);
