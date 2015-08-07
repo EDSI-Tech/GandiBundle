@@ -97,14 +97,15 @@ class DomainAvailability
      * @return array
      */
     private function convertDomainListToUTF8(array $domains) {
-        
-        $result = array();
+
+        $data = array();
         
         foreach($domains as $domain => $result) {
-            $result[idn_to_utf8($domain)] = $result;
+            $domain = idn_to_utf8($domain);
+            $data[$domain] = $result;
         }
         
-        return $result;
+        return $data;
         
     }
 }
