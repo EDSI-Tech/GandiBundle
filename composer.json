@@ -14,11 +14,11 @@
         }
     },
     "require": {
-        "php": "~5.4",
-        "symfony/symfony": "~2.5",
-        "zendframework/zend-xmlrpc": "2.4.*",
-        "ocramius/proxy-manager": "1.0.*",
-        "zendframework/zendxml": "~1.0"
+        "php": "^5.4",
+        "symfony/symfony": "^2.5",
+        "zendframework/zend-xmlrpc": "^2.4",
+        "ocramius/proxy-manager": "^1.0",
+        "zendframework/zendxml": "^1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "*"
