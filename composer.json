@@ -15,9 +15,9 @@
     },
     "require": {
         "php": "^5.4 || ^7.0",
-        "symfony/symfony": "^2.5",
-        "zendframework/zend-xmlrpc": "^2.4",
-        "ocramius/proxy-manager": "^1.0",
+        "symfony/symfony": "^2.8 || ^3.4 || ^4.0",
+        "zendframework/zend-xmlrpc": "^2.6",
+        "ocramius/proxy-manager": "^2.0",
         "zendframework/zendxml": "^1.0"
     },
     "require-dev": {
